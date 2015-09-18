@@ -126,6 +126,23 @@ class WeatherInfoDownloader : NSOperation
                     
                     do
                     {
+                        if((jsonResult[RESPONSE_KEY_INTERNAL_CODE] as? String) == nil)
+                        {
+                            isError = true;
+                            break;
+                        }
+                        let internalCode = jsonResult[RESPONSE_KEY_INTERNAL_CODE] as! String;
+                        if(internalCode.toInt() != 200)
+                        {
+                            isError = true;
+                            if((jsonResult[RESPONSE_KEY_MESSAGE] as? String) != nil)
+                            {
+                                let message = jsonResult[RESPONSE_KEY_MESSAGE] as! String;
+                                println("Message: \(message)");
+                            }
+                            break;
+                        }
+                        
                         //Parse city info
                         if((jsonResult[RESPONSE_KEY_CITY] as? NSDictionary) != nil)
                         {
@@ -257,6 +274,7 @@ class WeatherInfoDownloader : NSOperation
                         if(isError)
                         {
                             self.city.state = CityWeatherRecordState.Failed;
+                            NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name]);
                             break;
                         }
                         
@@ -264,9 +282,16 @@ class WeatherInfoDownloader : NSOperation
                         self.city.state = CityWeatherRecordState.Downloaded;
                         NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_COMPLETE, object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name]);
                     }while false
+                    
+                    if(isError)
+                    {
+                        self.city.state = CityWeatherRecordState.Failed;
+                        NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name]);
+                    }
                 }
                 else
                 {
+                    self.city.state = CityWeatherRecordState.Failed;
                     NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name]);
                 }
         }
