@@ -43,7 +43,7 @@
 		071807DF1B95CFAB00F61DC2 /* WeatherDayListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherDayListViewController.swift; sourceTree = "<group>"; };
 		071807E11B95D0B600F61DC2 /* WeatherDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherDetailsViewController.swift; sourceTree = "<group>"; };
 		071807E31B96E4AB00F61DC2 /* CollapsableTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollapsableTableViewCell.swift; sourceTree = "<group>"; };
-		07F6C2E41B90602D00131283 /* OpenWeatherForecast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenWeatherForecast.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		07F6C2E41B90602D00131283 /* Open Weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open Weather.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07F6C2E81B90602D00131283 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		07F6C2E91B90602D00131283 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		07F6C2EB1B90602D00131283 /* AddCityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCityViewController.swift; sourceTree = "<group>"; };
@@ -105,7 +105,7 @@
 		07F6C2E51B90602D00131283 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				07F6C2E41B90602D00131283 /* OpenWeatherForecast.app */,
+				07F6C2E41B90602D00131283 /* Open Weather.app */,
 				07F6C2F91B90602D00131283 /* OpenWeatherForecastTests.xctest */,
 			);
 			name = Products;
@@ -206,7 +206,7 @@
 			);
 			name = OpenWeatherForecast;
 			productName = OpenWeatherForecast;
-			productReference = 07F6C2E41B90602D00131283 /* OpenWeatherForecast.app */;
+			productReference = 07F6C2E41B90602D00131283 /* Open Weather.app */;
 			productType = "com.apple.product-type.application";
 		};
 		07F6C2F81B90602D00131283 /* OpenWeatherForecastTests */ = {
@@ -427,7 +427,7 @@
 				INFOPLIST_FILE = OpenWeatherForecast/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Open Weather";
 			};
 			name = Debug;
 		};
@@ -438,7 +438,7 @@
 				INFOPLIST_FILE = OpenWeatherForecast/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Open Weather";
 			};
 			name = Release;
 		};
