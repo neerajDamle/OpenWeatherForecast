@@ -15,7 +15,6 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
     @IBOutlet var addCityBtn: UIButton!
     @IBOutlet var cityListTableView: UITableView!
     
-    var cityNames: [String] = [];
     var cities: [City] = [];
     
     let pendingOperations = PendingOperations();
@@ -71,6 +70,10 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
             let cityInfo:Dictionary<String, String!> = notification.userInfo as! Dictionary<String, String!>;
             let cityName = cityInfo[CITY_INFO_KEY_CITY_NAME];
             println("Weather info download failed notification received for city \(cityName)");
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.cityListTableView.reloadData();
+            })
         }
     }
     
@@ -123,9 +126,6 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
     //Update UI for new city and start weather info download
     func fetchWeatherInfoForCity(cityName: String)
     {
-        //Add city name to the data source
-        cityNames.append(cityName);
-        
         if(cityListTableView.hidden)
         {
             //Show city list
@@ -140,7 +140,10 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         //Create City object
         let addedCity = City(name: cityName);
+        
+        //Add city to the data source
         cities.append(addedCity);
+        
         switch(addedCity.state)
         {
         case CityWeatherRecordState.New:
@@ -291,7 +294,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
     //UITableView datasource
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return cityNames.count;
+        return cities.count;
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
@@ -330,21 +333,58 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
         else if(city.state == CityWeatherRecordState.Failed)
         {
-            //Can be extended to retry
+            cell.selectionStyle = UITableViewCellSelectionStyle.Default;
+            cell.accessoryType = UITableViewCellAccessoryType.None;
+            cell.userInteractionEnabled = true;
+            cell.cityNameLabel.enabled = false;
+            
+            cell.progressIconImageView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI*360 / 180.0));
+            
+            let failureImage = UIImage(named: "SyncFailureIcon");
+            cell.progressIconImageView.image = failureImage;
         }
         
         return cell;
     }
     
+    
     //UITableView delegate
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if (editingStyle == UITableViewCellEditingStyle.Delete)
+        {
+            // Handle delete (by removing the data from your array and updating the tableview)
+            let city = cities[indexPath.row];
+            let cityName = city.name;
+            println("City to delete: \(cityName)");
+            
+            cities.removeAtIndex(indexPath.row);
+            cityListTableView.deleteRowsAtIndexPaths(
+                [indexPath], withRowAnimation: UITableViewRowAnimation.Automatic);
+        }
+    }
+    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
-        //Show WeatherDayListViewController with list of days
-        let selectedCity = cities[indexPath.row];
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil);
-        let weatherDayListViewController = storyBoard.instantiateViewControllerWithIdentifier("WeatherDayListViewController") as! WeatherDayListViewController;
-        weatherDayListViewController.setSelectedCity(selectedCity);
-        self.navigationController?.pushViewController(weatherDayListViewController, animated: true);
+        let city = cities[indexPath.row];
+        let cityName = city.name;
+        if(city.state == CityWeatherRecordState.Downloaded)
+        {
+            //Show WeatherDayListViewController with list of days
+            let selectedCity = cities[indexPath.row];
+            let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil);
+            let weatherDayListViewController = storyBoard.instantiateViewControllerWithIdentifier("WeatherDayListViewController") as! WeatherDayListViewController;
+            weatherDayListViewController.setSelectedCity(selectedCity);
+            self.navigationController?.pushViewController(weatherDayListViewController, animated: true);
+        }
+        else if(city.state == CityWeatherRecordState.Failed)
+        {
+            //Retry for weather info
+            self.startWeatherInfoDownload(city);
+        }
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true);
     }
