@@ -26,6 +26,8 @@ let RESPONSE_KEY_LATITUDE = "lat";
 let RESPONSE_KEY_LONGITUDE = "lon";
 let RESPONSE_KEY_COUNTRY = "country";
 let RESPONSE_KEY_COUNT = "cnt";
+let RESPONSE_KEY_INTERNAL_CODE = "cod";
+let RESPONSE_KEY_MESSAGE = "message";
 let RESPONSE_KEY_LIST = "list";
 
 let RESPONSE_KEY_WEATHER = "weather";
