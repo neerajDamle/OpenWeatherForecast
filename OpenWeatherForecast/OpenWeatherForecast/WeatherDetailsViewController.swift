@@ -167,15 +167,6 @@ class WeatherDetailsViewController: UIViewController, UITableViewDataSource, UIT
     }
     
     //UITableView delegate
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
-    {
-        let weatherParameter = weatherParameters[indexPath.row];
-        if(weatherParameter == WEATHER_DETAIL_KEY_TEMP)
-        {
-            println("Temperature cell tapped");
-        }
-    }
-    
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
         var cellHeight: CGFloat = 44.0;

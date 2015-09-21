@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		0705C2B81BA6DBD500C87FAB /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0705C2B71BA6DBD500C87FAB /* CoreLocation.framework */; };
+		0708A67F1BB0027D00EE9C03 /* JLToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0708A67C1BB0027D00EE9C03 /* JLToast.swift */; };
+		0708A6801BB0027D00EE9C03 /* JLToastCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0708A67D1BB0027D00EE9C03 /* JLToastCenter.swift */; };
+		0708A6811BB0027D00EE9C03 /* JLToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0708A67E1BB0027D00EE9C03 /* JLToastView.swift */; };
 		071518B91B997C34005142AC /* CityNameTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071518B81B997C34005142AC /* CityNameTableViewCell.swift */; };
 		071518BB1B99C10E005142AC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 071518BA1B99C10E005142AC /* QuartzCore.framework */; };
 		071807D61B94516B00F61DC2 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071807D51B94516B00F61DC2 /* Weather.swift */; };
@@ -36,6 +39,10 @@
 
 /* Begin PBXFileReference section */
 		0705C2B71BA6DBD500C87FAB /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		0708A67B1BB0027D00EE9C03 /* JLToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JLToast.h; sourceTree = "<group>"; };
+		0708A67C1BB0027D00EE9C03 /* JLToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JLToast.swift; sourceTree = "<group>"; };
+		0708A67D1BB0027D00EE9C03 /* JLToastCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JLToastCenter.swift; sourceTree = "<group>"; };
+		0708A67E1BB0027D00EE9C03 /* JLToastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JLToastView.swift; sourceTree = "<group>"; };
 		071518B81B997C34005142AC /* CityNameTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CityNameTableViewCell.swift; sourceTree = "<group>"; };
 		071518BA1B99C10E005142AC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		071807D51B94516B00F61DC2 /* Weather.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
@@ -76,19 +83,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0708A6791BB0027D00EE9C03 /* ThirdParty */ = {
+			isa = PBXGroup;
+			children = (
+				0708A67A1BB0027D00EE9C03 /* JLToast */,
+			);
+			path = ThirdParty;
+			sourceTree = "<group>";
+		};
+		0708A67A1BB0027D00EE9C03 /* JLToast */ = {
+			isa = PBXGroup;
+			children = (
+				0708A67B1BB0027D00EE9C03 /* JLToast.h */,
+				0708A67C1BB0027D00EE9C03 /* JLToast.swift */,
+				0708A67D1BB0027D00EE9C03 /* JLToastCenter.swift */,
+				0708A67E1BB0027D00EE9C03 /* JLToastView.swift */,
+			);
+			path = JLToast;
+			sourceTree = "<group>";
+		};
 		071807D71B945B4000F61DC2 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
 				071807D91B9464E300F61DC2 /* Constants.swift */,
 			);
 			name = Constants;
-			sourceTree = "<group>";
-		};
-		071807DC1B947D7200F61DC2 /* ThirdParty */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = ThirdParty;
 			sourceTree = "<group>";
 		};
 		07F6C2DB1B90602D00131283 = {
@@ -114,7 +133,7 @@
 		07F6C2E61B90602D00131283 /* OpenWeatherForecast */ = {
 			isa = PBXGroup;
 			children = (
-				071807DC1B947D7200F61DC2 /* ThirdParty */,
+				0708A6791BB0027D00EE9C03 /* ThirdParty */,
 				071807D71B945B4000F61DC2 /* Constants */,
 				07F6C30E1B9091A600131283 /* Helper */,
 				07F6C30B1B90656100131283 /* Controllers */,
@@ -292,8 +311,11 @@
 				071807DA1B9464E300F61DC2 /* Constants.swift in Sources */,
 				071807D61B94516B00F61DC2 /* Weather.swift in Sources */,
 				071807E01B95CFAB00F61DC2 /* WeatherDayListViewController.swift in Sources */,
+				0708A6801BB0027D00EE9C03 /* JLToastCenter.swift in Sources */,
+				0708A6811BB0027D00EE9C03 /* JLToastView.swift in Sources */,
 				071518B91B997C34005142AC /* CityNameTableViewCell.swift in Sources */,
 				07F6C2EC1B90602D00131283 /* AddCityViewController.swift in Sources */,
+				0708A67F1BB0027D00EE9C03 /* JLToast.swift in Sources */,
 				07F6C2EA1B90602D00131283 /* AppDelegate.swift in Sources */,
 				071807E21B95D0B600F61DC2 /* WeatherDetailsViewController.swift in Sources */,
 				071807E41B96E4AB00F61DC2 /* CollapsableTableViewCell.swift in Sources */,
