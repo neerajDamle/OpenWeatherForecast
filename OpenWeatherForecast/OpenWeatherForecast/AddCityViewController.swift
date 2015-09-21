@@ -71,6 +71,10 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
             let cityName = cityInfo[CITY_INFO_KEY_CITY_NAME];
             println("Weather info download failed notification received for city \(cityName)");
             
+            let errorMessage = cityInfo[RESPONSE_KEY_MESSAGE];
+            
+            JLToast.makeText(errorMessage!, duration: JLToastDelay.ShortDelay).show()
+            
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 self.cityListTableView.reloadData();
             })
