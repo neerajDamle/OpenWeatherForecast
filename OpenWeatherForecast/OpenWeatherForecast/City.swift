@@ -105,25 +105,25 @@ class WeatherInfoDownloader : NSOperation
         }
         var strWeatherURL = self.city.weatherInfoURL;
         strWeatherURL = strWeatherURL.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!;
-        println("Weather URL: \(strWeatherURL)");
+//        println("Weather URL: \(strWeatherURL)");
         let weatherURL = NSURL(string: strWeatherURL);
         let weatherURLRequest = NSURLRequest(URL: weatherURL!, cachePolicy: NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData, timeoutInterval: 10);
         var response: AutoreleasingUnsafeMutablePointer<NSURLResponse?>=nil;
         var err: NSError? = nil;
         NSURLConnection.sendAsynchronousRequest(weatherURLRequest, queue: NSOperationQueue.mainQueue())
             { (response, data, err) -> Void in
-                println("Weather web service response: \(response)");
+//                println("Weather web service response: \(response)");
                 
                 var serializationError: NSError?;
                 var jsonResult: NSDictionary! = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &serializationError) as? NSDictionary;
-                println("JSON response: \(jsonResult)");
+//                println("JSON response: \(jsonResult)");
                 
                 var requestCityName = self.city.name;
+                var errorMessage: String = "";
                 
                 if(jsonResult != nil)
                 {
                     var isError = false;
-                    
                     do
                     {
                         if((jsonResult[RESPONSE_KEY_INTERNAL_CODE] as? String) == nil)
@@ -137,8 +137,8 @@ class WeatherInfoDownloader : NSOperation
                             isError = true;
                             if((jsonResult[RESPONSE_KEY_MESSAGE] as? String) != nil)
                             {
-                                let message = jsonResult[RESPONSE_KEY_MESSAGE] as! String;
-                                println("Message: \(message)");
+                                errorMessage = jsonResult[RESPONSE_KEY_MESSAGE] as! String;
+                                println("Message: \(errorMessage)");
                             }
                             break;
                         }
@@ -274,7 +274,7 @@ class WeatherInfoDownloader : NSOperation
                         if(isError)
                         {
                             self.city.state = CityWeatherRecordState.Failed;
-                            NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name]);
+                            NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name, RESPONSE_KEY_MESSAGE:errorMessage]);
                             break;
                         }
                         
@@ -286,13 +286,13 @@ class WeatherInfoDownloader : NSOperation
                     if(isError)
                     {
                         self.city.state = CityWeatherRecordState.Failed;
-                        NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name]);
+                        NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name,RESPONSE_KEY_MESSAGE:errorMessage]);
                     }
                 }
                 else
                 {
                     self.city.state = CityWeatherRecordState.Failed;
-                    NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name]);
+                    NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name,RESPONSE_KEY_MESSAGE:errorMessage]);
                 }
         }
     }
