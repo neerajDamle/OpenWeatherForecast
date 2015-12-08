@@ -23,19 +23,8 @@
 		07F6C2EF1B90602D00131283 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07F6C2ED1B90602D00131283 /* Main.storyboard */; };
 		07F6C2F11B90602D00131283 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07F6C2F01B90602D00131283 /* Images.xcassets */; };
 		07F6C2F41B90602D00131283 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07F6C2F21B90602D00131283 /* LaunchScreen.xib */; };
-		07F6C3001B90602D00131283 /* OpenWeatherForecastTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F6C2FF1B90602D00131283 /* OpenWeatherForecastTests.swift */; };
 		07F6C30D1B90658100131283 /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F6C30C1B90658100131283 /* City.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		07F6C2FA1B90602D00131283 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 07F6C2DC1B90602D00131283 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 07F6C2E31B90602D00131283;
-			remoteInfo = OpenWeatherForecast;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		0705C2B71BA6DBD500C87FAB /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -57,7 +46,6 @@
 		07F6C2EE1B90602D00131283 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		07F6C2F01B90602D00131283 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		07F6C2F31B90602D00131283 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		07F6C2F91B90602D00131283 /* OpenWeatherForecastTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenWeatherForecastTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		07F6C2FE1B90602D00131283 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		07F6C2FF1B90602D00131283 /* OpenWeatherForecastTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWeatherForecastTests.swift; sourceTree = "<group>"; };
 		07F6C30C1B90658100131283 /* City.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
@@ -70,13 +58,6 @@
 			files = (
 				0705C2B81BA6DBD500C87FAB /* CoreLocation.framework in Frameworks */,
 				071518BB1B99C10E005142AC /* QuartzCore.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		07F6C2F61B90602D00131283 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,7 +106,6 @@
 			isa = PBXGroup;
 			children = (
 				07F6C2E41B90602D00131283 /* Open Weather.app */,
-				07F6C2F91B90602D00131283 /* OpenWeatherForecastTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -228,24 +208,6 @@
 			productReference = 07F6C2E41B90602D00131283 /* Open Weather.app */;
 			productType = "com.apple.product-type.application";
 		};
-		07F6C2F81B90602D00131283 /* OpenWeatherForecastTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 07F6C3061B90602D00131283 /* Build configuration list for PBXNativeTarget "OpenWeatherForecastTests" */;
-			buildPhases = (
-				07F6C2F51B90602D00131283 /* Sources */,
-				07F6C2F61B90602D00131283 /* Frameworks */,
-				07F6C2F71B90602D00131283 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				07F6C2FB1B90602D00131283 /* PBXTargetDependency */,
-			);
-			name = OpenWeatherForecastTests;
-			productName = OpenWeatherForecastTests;
-			productReference = 07F6C2F91B90602D00131283 /* OpenWeatherForecastTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -259,10 +221,6 @@
 				TargetAttributes = {
 					07F6C2E31B90602D00131283 = {
 						CreatedOnToolsVersion = 6.3;
-					};
-					07F6C2F81B90602D00131283 = {
-						CreatedOnToolsVersion = 6.3;
-						TestTargetID = 07F6C2E31B90602D00131283;
 					};
 				};
 			};
@@ -280,7 +238,6 @@
 			projectRoot = "";
 			targets = (
 				07F6C2E31B90602D00131283 /* OpenWeatherForecast */,
-				07F6C2F81B90602D00131283 /* OpenWeatherForecastTests */,
 			);
 		};
 /* End PBXProject section */
@@ -293,13 +250,6 @@
 				07F6C2EF1B90602D00131283 /* Main.storyboard in Resources */,
 				07F6C2F41B90602D00131283 /* LaunchScreen.xib in Resources */,
 				07F6C2F11B90602D00131283 /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		07F6C2F71B90602D00131283 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,23 +275,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		07F6C2F51B90602D00131283 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				07F6C3001B90602D00131283 /* OpenWeatherForecastTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		07F6C2FB1B90602D00131283 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 07F6C2E31B90602D00131283 /* OpenWeatherForecast */;
-			targetProxy = 07F6C2FA1B90602D00131283 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		07F6C2ED1B90602D00131283 /* Main.storyboard */ = {
@@ -466,40 +400,6 @@
 			};
 			name = Release;
 		};
-		07F6C3071B90602D00131283 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = OpenWeatherForecastTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OpenWeatherForecast.app/OpenWeatherForecast";
-			};
-			name = Debug;
-		};
-		07F6C3081B90602D00131283 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = OpenWeatherForecastTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OpenWeatherForecast.app/OpenWeatherForecast";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -517,15 +417,6 @@
 			buildConfigurations = (
 				07F6C3041B90602D00131283 /* Debug */,
 				07F6C3051B90602D00131283 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		07F6C3061B90602D00131283 /* Build configuration list for PBXNativeTarget "OpenWeatherForecastTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				07F6C3071B90602D00131283 /* Debug */,
-				07F6C3081B90602D00131283 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
