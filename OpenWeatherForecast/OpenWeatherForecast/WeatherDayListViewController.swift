@@ -51,12 +51,12 @@ class WeatherDayListViewController: UIViewController {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        var cell: UITableViewCell = weatherDayTableView.dequeueReusableCellWithIdentifier("WeatherDateCell") as! UITableViewCell;
+        let cell = weatherDayTableView.dequeueReusableCellWithIdentifier("WeatherDateCell");
         
         let strDate = weatherDates[indexPath.row];
-        cell.textLabel?.text = strDate;
+        cell!.textLabel?.text = strDate;
         
-        return cell;
+        return cell!;
     }
     
     //UITableView delegate

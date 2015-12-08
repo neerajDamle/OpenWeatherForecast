@@ -124,19 +124,19 @@ class WeatherDetailsViewController: UIViewController, UITableViewDataSource, UIT
 
         if(weatherParameter != WEATHER_DETAIL_KEY_TEMP)
         {
-            var cell: UITableViewCell = weatherDetailsTableView.dequeueReusableCellWithIdentifier("WeatherParameterCell") as! UITableViewCell;
-            cell.textLabel?.text = weatherParameter;
+            let cell = weatherDetailsTableView.dequeueReusableCellWithIdentifier("WeatherParameterCell") ;
+            cell!.textLabel?.text = weatherParameter;
             let weatherParameterValue = self.getValueForWeatherParameter(weatherParameter);
-            cell.detailTextLabel?.text = weatherParameterValue;
+            cell!.detailTextLabel?.text = weatherParameterValue;
             
-            cell.selectionStyle = UITableViewCellSelectionStyle.None;
-            cell.accessoryType = UITableViewCellAccessoryType.None;
+            cell!.selectionStyle = UITableViewCellSelectionStyle.None;
+            cell!.accessoryType = UITableViewCellAccessoryType.None;
             
-            return cell;
+            return cell!;
         }
         else
         {
-            var cell: CollapsableTableViewCell = weatherDetailsTableView.dequeueReusableCellWithIdentifier("WeatherParameterCollapsableCell") as! CollapsableTableViewCell;
+            let cell: CollapsableTableViewCell = weatherDetailsTableView.dequeueReusableCellWithIdentifier("WeatherParameterCollapsableCell") as! CollapsableTableViewCell;
             cell.setSelectedDayTemperature(self.weather.temeperature);
             cell.textLbl.text = weatherParameter;
             let weatherParameterValue = self.getValueForWeatherParameter(weatherParameter);
@@ -145,7 +145,7 @@ class WeatherDetailsViewController: UIViewController, UITableViewDataSource, UIT
             cell.selectionStyle = UITableViewCellSelectionStyle.None;
             cell.accessoryType = UITableViewCellAccessoryType.None;
             
-            UIView.animateWithDuration(NSTimeInterval(0.8), delay: NSTimeInterval(0.0), options: nil, animations: { () -> Void in
+            UIView.animateWithDuration(NSTimeInterval(0.8), delay: NSTimeInterval(0.0), options: [], animations: { () -> Void in
                 
                 cell.temperatureDetailsTableView.hidden = self.isTemperatureCellCollapsed;
                 return;

@@ -96,13 +96,13 @@ class CollapsableTableViewCell: UITableViewCell {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        var cell: UITableViewCell = temperatureDetailsTableView.dequeueReusableCellWithIdentifier("DayTemperatureParameterCell") as! UITableViewCell;
+        let cell = temperatureDetailsTableView.dequeueReusableCellWithIdentifier("DayTemperatureParameterCell");
         
         let dayTemperatureParameter = dayTemperatureParameters[indexPath.row];
-        cell.textLabel?.text = dayTemperatureParameter;
+        cell!.textLabel?.text = dayTemperatureParameter;
         let temperatureParameterValue = self.getValueForTemperatureParameter(dayTemperatureParameter);
-        cell.detailTextLabel?.text = temperatureParameterValue;
+        cell!.detailTextLabel?.text = temperatureParameterValue;
         
-        return cell;
+        return cell!;
     }
 }

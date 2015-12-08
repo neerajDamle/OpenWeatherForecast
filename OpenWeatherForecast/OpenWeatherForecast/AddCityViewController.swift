@@ -39,7 +39,11 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
         locationManager = CLLocationManager();
         locationManager.delegate = self;
         locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        locationManager.requestWhenInUseAuthorization();
+        if #available(iOS 8.0, *) {
+            locationManager.requestWhenInUseAuthorization()
+        } else {
+            // Fallback on earlier versions
+        };
     }
 
     override func didReceiveMemoryWarning() {
@@ -52,11 +56,11 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
         let notificationCenter = NSNotificationCenter.defaultCenter();
         let mainQueue = NSOperationQueue.mainQueue();
         
-        var weatherInfoDownloadCompletionObserver = notificationCenter.addObserverForName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_COMPLETE, object: nil, queue: mainQueue) { (notification) -> Void in
+        _ = notificationCenter.addObserverForName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_COMPLETE, object: nil, queue: mainQueue) { (notification) -> Void in
             let cityInfo:Dictionary<String, String!> = notification.userInfo as! Dictionary<String, String!>;
             let requestCityName = cityInfo[REQUEST_KEY_CITY_NAME];
             let cityName = cityInfo[CITY_INFO_KEY_CITY_NAME];
-            println("Weather info download complete notification received for city \(cityName)");
+            print("Weather info download complete notification received for city \(cityName)");
             
             //Update city name as per response
             self.updateCityNameAsPerResponse(requestCityName!, actualCityName: cityName!);
@@ -66,10 +70,10 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
             })
         }
         
-        var weatherInfoDownloadFailureObserver = notificationCenter.addObserverForName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, queue: mainQueue) { (notification) -> Void in
+        _ = notificationCenter.addObserverForName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, queue: mainQueue) { (notification) -> Void in
             let cityInfo:Dictionary<String, String!> = notification.userInfo as! Dictionary<String, String!>;
             let cityName = cityInfo[CITY_INFO_KEY_CITY_NAME];
-            println("Weather info download failed notification received for city \(cityName)");
+            print("Weather info download failed notification received for city \(cityName)");
             
             let errorMessage = cityInfo[RESPONSE_KEY_MESSAGE];
             
@@ -151,7 +155,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
         switch(addedCity.state)
         {
         case CityWeatherRecordState.New:
-            println("Start weather info download");
+            print("Start weather info download");
             self.startWeatherInfoDownload(addedCity);
             
 //            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(1 * Double(NSEC_PER_SEC)))
@@ -159,9 +163,9 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
 //                self.startWeatherInfoDownload(addedCity);
 //            })
         case CityWeatherRecordState.Downloading:
-            println("Weather info being downloaded");
+            print("Weather info being downloaded");
         default:
-            println("Unknown state");
+            print("Unknown state");
         }
     }
     
@@ -169,18 +173,18 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
     @IBAction func addCityBtnPressed(sender: AnyObject)
     {
         var cityName = cityNameTextfield.text;
-        cityName = cityName.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet());
-        if (!cityName.isEmpty)
+        cityName = cityName!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet());
+        if (!cityName!.isEmpty)
         {
             //Check if city is already added
-            let isCityAlreadyAdded = self.checkIfCityAlreadyAdded(cityName);
+            let isCityAlreadyAdded = self.checkIfCityAlreadyAdded(cityName!);
             if(!isCityAlreadyAdded)
             {
-                self.fetchWeatherInfoForCity(cityName);
+                self.fetchWeatherInfoForCity(cityName!);
             }
             else
             {
-                println("This city is already added");
+                print("This city is already added");
             }
             
             //Dismiss keyboard
@@ -189,7 +193,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     //Location Manager delegate
-    func locationManager(manager: CLLocationManager!,
+    func locationManager(manager: CLLocationManager,
         didChangeAuthorizationStatus status: CLAuthorizationStatus) {
             var shouldIAllow = false
             
@@ -217,23 +221,23 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
     }
     
-    func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!)
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError)
     {
         locationManager.stopUpdatingLocation()
-        if ((error) != nil)
-        {
-            print(error)
-        }
+//        if (error != nil)
+//        {
+            print(error, terminator: "")
+//        }
     }
     
-    func locationManager(manager:CLLocationManager, didUpdateLocations locations:[AnyObject])
+    func locationManager(manager:CLLocationManager, didUpdateLocations locations:[CLLocation])
     {
-        var locationArray = locations as NSArray;
-        var locationObj = locationArray.lastObject as! CLLocation;
-        var coord = locationObj.coordinate;
+        let locationArray = locations as NSArray;
+        let locationObj = locationArray.lastObject as! CLLocation;
+        let coord = locationObj.coordinate;
         
-        println("Latitude: \(coord.latitude)");
-        println("Longitude: \(coord.longitude)");
+        print("Latitude: \(coord.latitude)");
+        print("Longitude: \(coord.longitude)");
         
         locationManager.stopUpdatingLocation();
         
@@ -242,7 +246,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
         let location = CLLocation(latitude: coord.latitude, longitude: coord.longitude)
         
         geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
-            let placeArray = placemarks as? [CLPlacemark]
+            let placeArray = placemarks
             
             // Place details
             var placeMark: CLPlacemark!
@@ -250,34 +254,34 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
             let addressDict = placeMark.addressDictionary;
             
             // Address dictionary
-            println(addressDict)
+            print(addressDict)
             
             // Location name
-            if let locationName = placeMark.addressDictionary["Name"] as? NSString {
-                println(locationName)
+            if let locationName = placeMark.addressDictionary?["Name"] as? NSString {
+                print(locationName)
             }
             
             // Street address
-            if let street = placeMark.addressDictionary["Thoroughfare"] as? NSString {
-                println(street)
+            if let street = placeMark.addressDictionary?["Thoroughfare"] as? NSString {
+                print(street)
             }
             
             // City
-            if let city = placeMark.addressDictionary["City"] as? NSString {
-                println(city)
+            if let city = placeMark.addressDictionary?["City"] as? NSString {
+                print(city)
             }
             
             // Zip code
-            if let zip = placeMark.addressDictionary["ZIP"] as? NSString {
-                println(zip)
+            if let zip = placeMark.addressDictionary?["ZIP"] as? NSString {
+                print(zip)
             }
             
             // Country
-            if let country = placeMark.addressDictionary["Country"] as? NSString {
-                println(country)
+            if let country = placeMark.addressDictionary?["Country"] as? NSString {
+                print(country)
             }
             
-            var cityName = placeMark.addressDictionary["City"] as! String;
+            var cityName = placeMark.addressDictionary?["City"] as! String;
             cityName = cityName.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet());
             if (!cityName.isEmpty)
             {
@@ -289,7 +293,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
                 }
                 else
                 {
-                    println("This city is already added");
+                    print("This city is already added");
                 }
             }
         })
@@ -303,7 +307,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        var cell: CityNameTableViewCell = cityListTableView.dequeueReusableCellWithIdentifier("CityNameCell") as! CityNameTableViewCell;
+        let cell: CityNameTableViewCell = cityListTableView.dequeueReusableCellWithIdentifier("CityNameCell") as! CityNameTableViewCell;
         
         let city = cities[indexPath.row];
         let cityName = city.name;
@@ -363,7 +367,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
             // Handle delete (by removing the data from your array and updating the tableview)
             let city = cities[indexPath.row];
             let cityName = city.name;
-            println("City to delete: \(cityName)");
+            print("City to delete: \(cityName)");
             
             cities.removeAtIndex(indexPath.row);
             cityListTableView.deleteRowsAtIndexPaths(
