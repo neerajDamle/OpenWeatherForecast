@@ -378,7 +378,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
         let city = cities[indexPath.row];
-        let cityName = city.name;
+//        let cityName = city.name;
         if(city.state == CityWeatherRecordState.Downloaded)
         {
             //Show WeatherDayListViewController with list of days
