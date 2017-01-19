@@ -28,7 +28,7 @@ class WeatherDayListViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func setSelectedCity(selectedCity: City)
+    func setSelectedCity(_ selectedCity: City)
     {
         self.city = selectedCity;
         
@@ -36,39 +36,39 @@ class WeatherDayListViewController: UIViewController {
         for weather in self.city.weatherForDays
         {
             let weatherDate = weather.date;
-            let dateFormatter = NSDateFormatter();
+            let dateFormatter = DateFormatter();
             dateFormatter.dateFormat = "EEE, MMM dd yyyy";
-            let strDate = dateFormatter.stringFromDate(weatherDate);
+            let strDate = dateFormatter.string(from: weatherDate as Date);
             weatherDates.append(strDate);
         }
     }
     
     //UITableView datasource
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return weatherDates.count;
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAtIndexPath indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = weatherDayTableView.dequeueReusableCellWithIdentifier("WeatherDateCell");
+        let cell = weatherDayTableView.dequeueReusableCell(withIdentifier: "WeatherDateCell");
         
-        let strDate = weatherDates[indexPath.row];
+        let strDate = weatherDates[(indexPath as NSIndexPath).row];
         cell!.textLabel?.text = strDate;
         
         return cell!;
     }
     
     //UITableView delegate
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath)
     {
-        let selectedDayWeather = self.city.weatherForDays[indexPath.row];
+        let selectedDayWeather = self.city.weatherForDays[(indexPath as NSIndexPath).row];
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil);
-        let weatherDetailsViewController = storyBoard.instantiateViewControllerWithIdentifier("WeatherDetailsViewController") as! WeatherDetailsViewController;
+        let weatherDetailsViewController = storyBoard.instantiateViewController(withIdentifier: "WeatherDetailsViewController") as! WeatherDetailsViewController;
         weatherDetailsViewController.setSelectedDayWeather(selectedDayWeather);
         self.navigationController?.pushViewController(weatherDetailsViewController, animated: true);
         
-        tableView.deselectRowAtIndexPath(indexPath, animated: true);
+        tableView.deselectRow(at: indexPath, animated: true);
     }
     
     /*

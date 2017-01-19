@@ -14,7 +14,7 @@ let WEATHER_INFO_BASE_URL_WITH_ID = "http://api.openweathermap.org/data/2.5/fore
 // This enum contains all the possible states a city weather record can be in
 enum CityWeatherRecordState
 {
-    case New, Downloading, Downloaded, Failed;
+    case new, downloading, downloaded, failed;
 }
 
 class GeoCoordinates
@@ -32,7 +32,7 @@ class City: NSObject
     var noOfWeatherDays: Int = 14;
     var weatherForDays: [Weather] = [];
     var weatherInfoURL: String = "";
-    var state: CityWeatherRecordState = CityWeatherRecordState.New;
+    var state: CityWeatherRecordState = CityWeatherRecordState.new;
     
     override init()
     {
@@ -72,53 +72,53 @@ class City: NSObject
 
 class PendingOperations
 {
-    lazy var downloadsInProgressBasedOnName = Dictionary<String,NSOperation>();
-    lazy var downloadsInProgressBasedOnId = Dictionary<Int,NSOperation>();
-    lazy var downloadQueueBasedOnName: NSOperationQueue = {
-        var queue = NSOperationQueue();
+    lazy var downloadsInProgressBasedOnName = Dictionary<String,Operation>();
+    lazy var downloadsInProgressBasedOnId = Dictionary<Int,Operation>();
+    lazy var downloadQueueBasedOnName: OperationQueue = {
+        var queue = OperationQueue();
         queue.name = "City name based weather info download queue";
         return queue;
         }();
-    lazy var downloadQueueBasedOnId: NSOperationQueue = {
-        var queue = NSOperationQueue();
+    lazy var downloadQueueBasedOnId: OperationQueue = {
+        var queue = OperationQueue();
         queue.name = "City ID based weather info download queue";
         return queue;
         }();
 }
 
-class WeatherInfoDownloader : NSOperation
+class WeatherInfoDownloader : Operation
 {
     let city: City;
     
     init(city: City)
     {
         self.city = city;
-        self.city.state = CityWeatherRecordState.Downloading;
+        self.city.state = CityWeatherRecordState.downloading;
     }
     
     override func main()
     {
-        if(self.cancelled)
+        if(self.isCancelled)
         {
-            self.city.state = CityWeatherRecordState.Failed;
+            self.city.state = CityWeatherRecordState.failed;
             return;
         }
         var strWeatherURL = self.city.weatherInfoURL;
-        strWeatherURL = strWeatherURL.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!;
-//        println("Weather URL: \(strWeatherURL)");
-        let weatherURL = NSURL(string: strWeatherURL);
-        let weatherURLRequest = NSURLRequest(URL: weatherURL!, cachePolicy: NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData, timeoutInterval: 10);
-        var response: AutoreleasingUnsafeMutablePointer<NSURLResponse?>=nil;
+        strWeatherURL = strWeatherURL.addingPercentEscapes(using: String.Encoding.utf8)!;
+        print("Weather URL: \(strWeatherURL)");
+        let weatherURL = URL(string: strWeatherURL);
+        let weatherURLRequest = URLRequest(url: weatherURL!, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData, timeoutInterval: 10);
+        var response: AutoreleasingUnsafeMutablePointer<URLResponse?>?=nil;
         var err: NSError? = nil;
-        NSURLConnection.sendAsynchronousRequest(weatherURLRequest, queue: NSOperationQueue.mainQueue())
+        NSURLConnection.sendAsynchronousRequest(weatherURLRequest, queue: OperationQueue.main)
             { (response, data, err) -> Void in
 //                println("Weather web service response: \(response)");
                 
                 do
                 {
                     var serializationError: NSError?;
-                    let jsonResult: NSDictionary! = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as? NSDictionary;
-                    //                println("JSON response: \(jsonResult)");
+                    let jsonResult: [String:Any]! = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers) as? [String:Any];
+                    print("JSON response: \(jsonResult)");
                     
                     let requestCityName = self.city.name;
                     var errorMessage: String = "";
@@ -189,24 +189,24 @@ class WeatherInfoDownloader : NSOperation
                             }
                             let dayCount = jsonResult[RESPONSE_KEY_COUNT] as! Int;
                             
-                            if((jsonResult[RESPONSE_KEY_LIST] as? NSArray) == nil)
+                            if((jsonResult[RESPONSE_KEY_LIST] as? [[String:Any]]) == nil)
                             {
                                 isError = true;
                                 break;
                             }
-                            let weatherForDays = jsonResult[RESPONSE_KEY_LIST] as! NSArray;
+                            let weatherForDays = jsonResult[RESPONSE_KEY_LIST] as! [[String:Any]]
                             
                             for weatherInfo in weatherForDays
                             {
-                                if((weatherInfo as? NSDictionary) == nil)
+                                if((weatherInfo as? [String:Any]) == nil)
                                 {
                                     isError = true;
                                     break;
                                 }
                                 
                                 let weather = Weather();
-                                
-                                if((weatherInfo[RESPONSE_KEY_TEMP] as? NSDictionary) == nil)
+
+                                if((weatherInfo[RESPONSE_KEY_TEMP] as? [String:Any]) == nil)
                                 {
                                     isError = true;
                                     break;
@@ -220,7 +220,7 @@ class WeatherInfoDownloader : NSOperation
                                 let eveningTemp = tempInfo[RESPONSE_KEY_EVENING_TEMP] as! Double;
                                 let nightTemp = tempInfo[RESPONSE_KEY_NIGHT_TEMP] as! Double;
                                 let overAllTemp = tempInfo[RESPONSE_KEY_OVERALL_TEMP] as! Double;
-                                
+
                                 let dayTemperature = DayTemperature();
                                 dayTemperature.minDailyTemp = minDailyTemp;
                                 dayTemperature.maxDailyTemp = maxDailyTemp;
@@ -230,15 +230,15 @@ class WeatherInfoDownloader : NSOperation
                                 dayTemperature.overAllTemp = overAllTemp;
                                 
                                 weather.temeperature = dayTemperature;
-                                
+
                                 //Parse weather information
-                                if((weatherInfo[RESPONSE_KEY_WEATHER] as? NSArray) == nil)
+                                if((weatherInfo[RESPONSE_KEY_WEATHER] as? [[String:Any]]) == nil)
                                 {
                                     isError = true;
                                     break;
                                 }
-                                
-                                let weatherGroupInfoArray = weatherInfo[RESPONSE_KEY_WEATHER] as! NSArray;
+
+                                let weatherGroupInfoArray = weatherInfo[RESPONSE_KEY_WEATHER] as! [[String:Any]];
                                 for weatherGroupInfo in weatherGroupInfoArray
                                 {
                                     let conditionID = weatherGroupInfo[RESPONSE_KEY_CONDITION_ID] as! Int;
@@ -254,14 +254,14 @@ class WeatherInfoDownloader : NSOperation
                                     
                                     weather.weatherGroups.append(weatherGroup);
                                 }
-                                
+
                                 let cloudiness = weatherInfo[RESPONSE_KEY_CLOUDINESS] as! Double;
                                 let windSpeed = weatherInfo[RESPONSE_KEY_WIND_SPEED] as! Double;
                                 let windDirectionInDegrees = weatherInfo[RESPONSE_KEY_WIND_DIRECTION_IN_DEGREES] as! Double;
                                 let humidity = weatherInfo[RESPONSE_KEY_HUMIDITY] as! Double;
                                 let pressure = weatherInfo[RESPONSE_KEY_PRESSURE] as! Double;
-                                let timeStamp = weatherInfo[RESPONSE_KEY_WEATHER_DATE] as! NSTimeInterval;
-                                let date = NSDate(timeIntervalSince1970: timeStamp);
+                                let timeStamp = weatherInfo[RESPONSE_KEY_WEATHER_DATE] as! TimeInterval;
+                                let date = Date(timeIntervalSince1970: timeStamp);
                                 
                                 weather.cloudiness = cloudiness;
                                 weather.windSpeed = windSpeed;
@@ -275,26 +275,26 @@ class WeatherInfoDownloader : NSOperation
                             
                             if(isError)
                             {
-                                self.city.state = CityWeatherRecordState.Failed;
-                                NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name, RESPONSE_KEY_MESSAGE:errorMessage]);
+                                self.city.state = CityWeatherRecordState.failed;
+                                NotificationCenter.default.post(name: Notification.Name(rawValue: NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED), object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name, RESPONSE_KEY_MESSAGE:errorMessage]);
                                 break;
                             }
                             
                             //Update state
-                            self.city.state = CityWeatherRecordState.Downloaded;
-                            NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_COMPLETE, object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name]);
+                            self.city.state = CityWeatherRecordState.downloaded;
+                            NotificationCenter.default.post(name: Notification.Name(rawValue: NOTIFICATION_WEATHER_INFO_DOWNLOAD_COMPLETE), object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name]);
                         }while false
                         
                         if(isError)
                         {
-                            self.city.state = CityWeatherRecordState.Failed;
-                            NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name,RESPONSE_KEY_MESSAGE:errorMessage]);
+                            self.city.state = CityWeatherRecordState.failed;
+                            NotificationCenter.default.post(name: Notification.Name(rawValue: NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED), object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name,RESPONSE_KEY_MESSAGE:errorMessage]);
                         }
                     }
                     else
                     {
-                        self.city.state = CityWeatherRecordState.Failed;
-                        NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name,RESPONSE_KEY_MESSAGE:errorMessage]);
+                        self.city.state = CityWeatherRecordState.failed;
+                        NotificationCenter.default.post(name: Notification.Name(rawValue: NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED), object: nil, userInfo: [REQUEST_KEY_CITY_NAME:requestCityName,CITY_INFO_KEY_CITY_NAME:self.city.name,RESPONSE_KEY_MESSAGE:errorMessage]);
                     }
                 } catch {
                         

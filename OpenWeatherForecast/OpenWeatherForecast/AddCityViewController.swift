@@ -30,7 +30,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         cityNameTextfield.layer.cornerRadius = 8.0;
         cityNameTextfield.layer.masksToBounds = true;
-        cityNameTextfield.layer.borderColor = UIColor.blackColor().CGColor;
+        cityNameTextfield.layer.borderColor = UIColor.black.cgColor;
         cityNameTextfield.layer.borderWidth = 1.0;
         
         self.registerForNotifications();
@@ -53,33 +53,33 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     func registerForNotifications()
     {
-        let notificationCenter = NSNotificationCenter.defaultCenter();
-        let mainQueue = NSOperationQueue.mainQueue();
+        let notificationCenter = NotificationCenter.default;
+        let mainQueue = OperationQueue.main;
         
-        _ = notificationCenter.addObserverForName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_COMPLETE, object: nil, queue: mainQueue) { (notification) -> Void in
-            let cityInfo:Dictionary<String, String!> = notification.userInfo as! Dictionary<String, String!>;
+        _ = notificationCenter.addObserver(forName: NSNotification.Name(rawValue: NOTIFICATION_WEATHER_INFO_DOWNLOAD_COMPLETE), object: nil, queue: mainQueue) { (notification) -> Void in
+            let cityInfo:Dictionary<String, String?> = (notification as NSNotification).userInfo as! Dictionary<String, String?>;
             let requestCityName = cityInfo[REQUEST_KEY_CITY_NAME];
             let cityName = cityInfo[CITY_INFO_KEY_CITY_NAME];
             print("Weather info download complete notification received for city \(cityName)");
             
             //Update city name as per response
-            self.updateCityNameAsPerResponse(requestCityName!, actualCityName: cityName!);
+            self.updateCityNameAsPerResponse(requestCityName!!, actualCityName: cityName!!);
             
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            DispatchQueue.main.async(execute: { () -> Void in
                 self.cityListTableView.reloadData();
             })
         }
         
-        _ = notificationCenter.addObserverForName(NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED, object: nil, queue: mainQueue) { (notification) -> Void in
-            let cityInfo:Dictionary<String, String!> = notification.userInfo as! Dictionary<String, String!>;
+        _ = notificationCenter.addObserver(forName: NSNotification.Name(rawValue: NOTIFICATION_WEATHER_INFO_DOWNLOAD_FAILED), object: nil, queue: mainQueue) { (notification) -> Void in
+            let cityInfo:Dictionary<String, String?> = (notification as NSNotification).userInfo as! Dictionary<String, String?>;
             let cityName = cityInfo[CITY_INFO_KEY_CITY_NAME];
             print("Weather info download failed notification received for city \(cityName)");
             
             let errorMessage = cityInfo[RESPONSE_KEY_MESSAGE];
             
-            JLToast.makeText(errorMessage!, duration: JLToastDelay.ShortDelay).show()
+            JLToast.makeText(errorMessage!!, duration: JLToastDelay.ShortDelay).show()
             
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            DispatchQueue.main.async(execute: { () -> Void in
                 self.cityListTableView.reloadData();
             })
         }
@@ -87,10 +87,10 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func deregisterNotifications()
     {
-        NSNotificationCenter.defaultCenter().removeObserver(self);
+        NotificationCenter.default.removeObserver(self);
     }
     
-    func updateCityNameAsPerResponse(requestedCityName: String, actualCityName: String)
+    func updateCityNameAsPerResponse(_ requestedCityName: String, actualCityName: String)
     {
         //Update only if the names differ
         if(requestedCityName != actualCityName)
@@ -106,12 +106,12 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
     
-    func checkIfCityAlreadyAdded(cityNameToCheck: String) -> Bool
+    func checkIfCityAlreadyAdded(_ cityNameToCheck: String) -> Bool
     {
         var isCityAlreadyAdded = false;
         for currentCity in cities
         {
-            if(currentCity.name.caseInsensitiveCompare(cityNameToCheck) == NSComparisonResult.OrderedSame)
+            if(currentCity.name.caseInsensitiveCompare(cityNameToCheck) == ComparisonResult.orderedSame)
             {
                 isCityAlreadyAdded = true;
                 break;
@@ -122,7 +122,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     //Download weather info
-    func startWeatherInfoDownload(city: City)
+    func startWeatherInfoDownload(_ city: City)
     {
         let weatherDownloader = WeatherInfoDownloader(city: city);
         
@@ -132,12 +132,12 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     //Update UI for new city and start weather info download
-    func fetchWeatherInfoForCity(cityName: String)
+    func fetchWeatherInfoForCity(_ cityName: String)
     {
-        if(cityListTableView.hidden)
+        if(cityListTableView.isHidden)
         {
             //Show city list
-            cityListTableView.hidden = false;
+            cityListTableView.isHidden = false;
         }
         
         //Refresh city list
@@ -154,7 +154,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         switch(addedCity.state)
         {
-        case CityWeatherRecordState.New:
+        case CityWeatherRecordState.new:
             print("Start weather info download");
             self.startWeatherInfoDownload(addedCity);
             
@@ -162,7 +162,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
 //            dispatch_after(delayTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
 //                self.startWeatherInfoDownload(addedCity);
 //            })
-        case CityWeatherRecordState.Downloading:
+        case CityWeatherRecordState.downloading:
             print("Weather info being downloaded");
         default:
             print("Unknown state");
@@ -170,10 +170,10 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     //Button click callbacks
-    @IBAction func addCityBtnPressed(sender: AnyObject)
+    @IBAction func addCityBtnPressed(_ sender: AnyObject)
     {
         var cityName = cityNameTextfield.text;
-        cityName = cityName!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet());
+        cityName = cityName!.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines);
         if (!cityName!.isEmpty)
         {
             //Check if city is already added
@@ -193,17 +193,17 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     //Location Manager delegate
-    func locationManager(manager: CLLocationManager,
-        didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    func locationManager(_ manager: CLLocationManager,
+        didChangeAuthorization status: CLAuthorizationStatus) {
             var shouldIAllow = false
             
             switch status
             {
-                case CLAuthorizationStatus.Restricted:
+                case CLAuthorizationStatus.restricted:
                     locationStatus = "Restricted Access to location"
-                case CLAuthorizationStatus.Denied:
+                case CLAuthorizationStatus.denied:
                     locationStatus = "User denied access to location"
-                case CLAuthorizationStatus.NotDetermined:
+                case CLAuthorizationStatus.notDetermined:
                     locationStatus = "Status not determined"
                 default:
                     locationStatus = "Allowed location Access"
@@ -221,7 +221,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
     }
     
-    func locationManager(manager: CLLocationManager, didFailWithError error: NSError)
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
     {
         locationManager.stopUpdatingLocation()
 //        if (error != nil)
@@ -230,7 +230,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
 //        }
     }
     
-    func locationManager(manager:CLLocationManager, didUpdateLocations locations:[CLLocation])
+    func locationManager(_ manager:CLLocationManager, didUpdateLocations locations:[CLLocation])
     {
         let locationArray = locations as NSArray;
         let locationObj = locationArray.lastObject as! CLLocation;
@@ -282,7 +282,7 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
             
             var cityName = placeMark.addressDictionary?["City"] as! String;
-            cityName = cityName.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet());
+            cityName = cityName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines);
             if (!cityName.isEmpty)
             {
                 //Check if city is already added
@@ -300,53 +300,53 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     //UITableView datasource
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return cities.count;
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell: CityNameTableViewCell = cityListTableView.dequeueReusableCellWithIdentifier("CityNameCell") as! CityNameTableViewCell;
+        let cell: CityNameTableViewCell = cityListTableView.dequeueReusableCell(withIdentifier: "CityNameCell") as! CityNameTableViewCell;
         
-        let city = cities[indexPath.row];
+        let city = cities[(indexPath as NSIndexPath).row];
         let cityName = city.name;
         cell.cityNameLabel.text = cityName;
-        if((city.state == CityWeatherRecordState.New) || (city.state == CityWeatherRecordState.Downloading))
+        if((city.state == CityWeatherRecordState.new) || (city.state == CityWeatherRecordState.downloading))
         {
-            cell.selectionStyle = UITableViewCellSelectionStyle.None;
-            cell.accessoryType = UITableViewCellAccessoryType.None;
-            cell.userInteractionEnabled = false;
-            cell.cityNameLabel.enabled = false;
+            cell.selectionStyle = UITableViewCellSelectionStyle.none;
+            cell.accessoryType = UITableViewCellAccessoryType.none;
+            cell.isUserInteractionEnabled = false;
+            cell.cityNameLabel.isEnabled = false;
             
             let progressImage = UIImage(named: "SyncIcon");
             cell.progressIconImageView.image = progressImage;
 
             //Animate sync icon to indicate progress
-            UIView.animateWithDuration(NSTimeInterval(0.8), delay: NSTimeInterval(0.0), options: UIViewAnimationOptions.Repeat, animations: { () -> Void in
-                cell.progressIconImageView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI*180 / 180.0));
+            UIView.animate(withDuration: TimeInterval(0.8), delay: TimeInterval(0.0), options: UIViewAnimationOptions.repeat, animations: { () -> Void in
+                cell.progressIconImageView.transform = CGAffineTransform(rotationAngle: CGFloat(M_PI*180 / 180.0));
                 return;
                 }, completion: { (finished: Bool) -> Void in
                     return;
             })
         }
-        else if(city.state == CityWeatherRecordState.Downloaded)
+        else if(city.state == CityWeatherRecordState.downloaded)
         {
-            cell.selectionStyle = UITableViewCellSelectionStyle.Default;
-            cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
-            cell.userInteractionEnabled = true;
-            cell.cityNameLabel.enabled = true;
+            cell.selectionStyle = UITableViewCellSelectionStyle.default;
+            cell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator;
+            cell.isUserInteractionEnabled = true;
+            cell.cityNameLabel.isEnabled = true;
             
             cell.progressIconImageView.image = nil;
         }
-        else if(city.state == CityWeatherRecordState.Failed)
+        else if(city.state == CityWeatherRecordState.failed)
         {
-            cell.selectionStyle = UITableViewCellSelectionStyle.Default;
-            cell.accessoryType = UITableViewCellAccessoryType.None;
-            cell.userInteractionEnabled = true;
-            cell.cityNameLabel.enabled = false;
+            cell.selectionStyle = UITableViewCellSelectionStyle.default;
+            cell.accessoryType = UITableViewCellAccessoryType.none;
+            cell.isUserInteractionEnabled = true;
+            cell.cityNameLabel.isEnabled = false;
             
-            cell.progressIconImageView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI*360 / 180.0));
+            cell.progressIconImageView.transform = CGAffineTransform(rotationAngle: CGFloat(M_PI*360 / 180.0));
             
             let failureImage = UIImage(named: "SyncFailureIcon");
             cell.progressIconImageView.image = failureImage;
@@ -357,48 +357,48 @@ class AddCityViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     
     //UITableView delegate
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if (editingStyle == UITableViewCellEditingStyle.Delete)
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == UITableViewCellEditingStyle.delete)
         {
             // Handle delete (by removing the data from your array and updating the tableview)
-            let city = cities[indexPath.row];
+            let city = cities[(indexPath as NSIndexPath).row];
             let cityName = city.name;
             print("City to delete: \(cityName)");
             
-            cities.removeAtIndex(indexPath.row);
-            cityListTableView.deleteRowsAtIndexPaths(
-                [indexPath], withRowAnimation: UITableViewRowAnimation.Automatic);
+            cities.remove(at: (indexPath as NSIndexPath).row);
+            cityListTableView.deleteRows(
+                at: [indexPath], with: UITableViewRowAnimation.automatic);
         }
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
-        let city = cities[indexPath.row];
+        let city = cities[(indexPath as NSIndexPath).row];
 //        let cityName = city.name;
-        if(city.state == CityWeatherRecordState.Downloaded)
+        if(city.state == CityWeatherRecordState.downloaded)
         {
             //Show WeatherDayListViewController with list of days
-            let selectedCity = cities[indexPath.row];
+            let selectedCity = cities[(indexPath as NSIndexPath).row];
             let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil);
-            let weatherDayListViewController = storyBoard.instantiateViewControllerWithIdentifier("WeatherDayListViewController") as! WeatherDayListViewController;
+            let weatherDayListViewController = storyBoard.instantiateViewController(withIdentifier: "WeatherDayListViewController") as! WeatherDayListViewController;
             weatherDayListViewController.setSelectedCity(selectedCity);
             self.navigationController?.pushViewController(weatherDayListViewController, animated: true);
         }
-        else if(city.state == CityWeatherRecordState.Failed)
+        else if(city.state == CityWeatherRecordState.failed)
         {
             //Retry for weather info
             self.startWeatherInfoDownload(city);
         }
         
-        tableView.deselectRowAtIndexPath(indexPath, animated: true);
+        tableView.deselectRow(at: indexPath, animated: true);
     }
     
     //UITextField delegate
-    func textFieldShouldReturn(textField: UITextField) -> Bool
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
     {
         cityNameTextfield.resignFirstResponder();
         return true;

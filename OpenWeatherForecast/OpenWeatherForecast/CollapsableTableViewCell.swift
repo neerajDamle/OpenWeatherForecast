@@ -23,18 +23,18 @@ class CollapsableTableViewCell: UITableViewCell {
         // Initialization code
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
     }
     
-    func setSelectedDayTemperature(dayTemperature: DayTemperature)
+    func setSelectedDayTemperature(_ dayTemperature: DayTemperature)
     {
         self.dayTemperature = dayTemperature;
     }
     
-    func getValueForTemperatureParameter(temperatureParameter: String) -> String
+    func getValueForTemperatureParameter(_ temperatureParameter: String) -> String
     {
         var temperatureParameterValueInKelvin: String = "";
         var temperatureParameterValueInCelsius: String = "";
@@ -82,23 +82,23 @@ class CollapsableTableViewCell: UITableViewCell {
         return temperatureParameterValueInCelsius;
     }
     
-    func getCelsiusForKelvin(tempInKelvin: Double) -> Double
+    func getCelsiusForKelvin(_ tempInKelvin: Double) -> Double
     {
         let tempInCelsius: Double = tempInKelvin - 273.15;
         return tempInCelsius;
     }
     
     //UITableView datasource
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return dayTemperatureParameters.count;
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAtIndexPath indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = temperatureDetailsTableView.dequeueReusableCellWithIdentifier("DayTemperatureParameterCell");
+        let cell = temperatureDetailsTableView.dequeueReusableCell(withIdentifier: "DayTemperatureParameterCell");
         
-        let dayTemperatureParameter = dayTemperatureParameters[indexPath.row];
+        let dayTemperatureParameter = dayTemperatureParameters[(indexPath as NSIndexPath).row];
         cell!.textLabel?.text = dayTemperatureParameter;
         let temperatureParameterValue = self.getValueForTemperatureParameter(dayTemperatureParameter);
         cell!.detailTextLabel?.text = temperatureParameterValue;

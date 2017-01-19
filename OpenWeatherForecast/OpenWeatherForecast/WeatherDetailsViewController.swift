@@ -22,13 +22,13 @@ class WeatherDetailsViewController: UIViewController, UITableViewDataSource, UIT
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        cellTapGestureRecognizer = UITapGestureRecognizer(target: self, action:Selector("collapsableCellTapped:"));
+        cellTapGestureRecognizer = UITapGestureRecognizer(target: self, action:#selector(WeatherDetailsViewController.collapsableCellTapped(_:)));
         cellTapGestureRecognizer.numberOfTapsRequired = 1;
         
         let weatherDate = weather.date;
-        let dateFormatter = NSDateFormatter();
+        let dateFormatter = DateFormatter();
         dateFormatter.dateFormat = "EEE, MMM dd yyyy";
-        let strDate = dateFormatter.stringFromDate(weatherDate);
+        let strDate = dateFormatter.string(from: weatherDate as Date);
         self.navigationItem.title = strDate;
     }
 
@@ -37,12 +37,12 @@ class WeatherDetailsViewController: UIViewController, UITableViewDataSource, UIT
         // Dispose of any resources that can be recreated.
     }
     
-    func setSelectedDayWeather(weather: Weather)
+    func setSelectedDayWeather(_ weather: Weather)
     {
         self.weather = weather;
     }
 
-    func getValueForWeatherParameter(weatherParameter: String) -> String
+    func getValueForWeatherParameter(_ weatherParameter: String) -> String
     {
         var weatherParameterValue: String = "";
         
@@ -88,14 +88,14 @@ class WeatherDetailsViewController: UIViewController, UITableViewDataSource, UIT
         return weatherParameterValue;
     }
     
-    func getCelsiusForKelvin(tempInKelvin: Double) -> Double
+    func getCelsiusForKelvin(_ tempInKelvin: Double) -> Double
     {
         let tempInCelsius: Double = tempInKelvin - 273.15;
         return tempInCelsius;
     }
     
     //Tap geture recognizer callback
-    @IBAction func collapsableCellTapped(sender: AnyObject)
+    @IBAction func collapsableCellTapped(_ sender: AnyObject)
     {
         if(isTemperatureCellCollapsed)
         {
@@ -113,41 +113,41 @@ class WeatherDetailsViewController: UIViewController, UITableViewDataSource, UIT
     }
     
     //UITableView datasource
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return weatherParameters.count;
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let weatherParameter = weatherParameters[indexPath.row];
+        let weatherParameter = weatherParameters[(indexPath as NSIndexPath).row];
 
         if(weatherParameter != WEATHER_DETAIL_KEY_TEMP)
         {
-            let cell = weatherDetailsTableView.dequeueReusableCellWithIdentifier("WeatherParameterCell") ;
+            let cell = weatherDetailsTableView.dequeueReusableCell(withIdentifier: "WeatherParameterCell") ;
             cell!.textLabel?.text = weatherParameter;
             let weatherParameterValue = self.getValueForWeatherParameter(weatherParameter);
             cell!.detailTextLabel?.text = weatherParameterValue;
             
-            cell!.selectionStyle = UITableViewCellSelectionStyle.None;
-            cell!.accessoryType = UITableViewCellAccessoryType.None;
+            cell!.selectionStyle = UITableViewCellSelectionStyle.none;
+            cell!.accessoryType = UITableViewCellAccessoryType.none;
             
             return cell!;
         }
         else
         {
-            let cell: CollapsableTableViewCell = weatherDetailsTableView.dequeueReusableCellWithIdentifier("WeatherParameterCollapsableCell") as! CollapsableTableViewCell;
+            let cell: CollapsableTableViewCell = weatherDetailsTableView.dequeueReusableCell(withIdentifier: "WeatherParameterCollapsableCell") as! CollapsableTableViewCell;
             cell.setSelectedDayTemperature(self.weather.temeperature);
             cell.textLbl.text = weatherParameter;
             let weatherParameterValue = self.getValueForWeatherParameter(weatherParameter);
             cell.detailTextLbl.text = weatherParameterValue;
             cell.addGestureRecognizer(cellTapGestureRecognizer);
-            cell.selectionStyle = UITableViewCellSelectionStyle.None;
-            cell.accessoryType = UITableViewCellAccessoryType.None;
+            cell.selectionStyle = UITableViewCellSelectionStyle.none;
+            cell.accessoryType = UITableViewCellAccessoryType.none;
             
-            UIView.animateWithDuration(NSTimeInterval(0.8), delay: NSTimeInterval(0.0), options: [], animations: { () -> Void in
+            UIView.animate(withDuration: TimeInterval(0.8), delay: TimeInterval(0.0), options: [], animations: { () -> Void in
                 
-                cell.temperatureDetailsTableView.hidden = self.isTemperatureCellCollapsed;
+                cell.temperatureDetailsTableView.isHidden = self.isTemperatureCellCollapsed;
                 return;
                 }, completion: { (finished: Bool) -> Void in
                     var img: UIImage;
@@ -167,10 +167,10 @@ class WeatherDetailsViewController: UIViewController, UITableViewDataSource, UIT
     }
     
     //UITableView delegate
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
         var cellHeight: CGFloat = 44.0;
-        let weatherParameter = weatherParameters[indexPath.row];
+        let weatherParameter = weatherParameters[(indexPath as NSIndexPath).row];
         if(weatherParameter == WEATHER_DETAIL_KEY_TEMP)
         {
             cellHeight = tempCellHeight;

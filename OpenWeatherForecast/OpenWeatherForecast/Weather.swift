@@ -38,7 +38,7 @@ class Weather: NSObject
     
     var pressure = 0.0; //Atmospheric pressure on the sea level, hPa
     
-    var date = NSDate();
+    var date = Date();
     
     var temeperature = DayTemperature();
     var weatherGroups: [WeatherGroup] = [];
